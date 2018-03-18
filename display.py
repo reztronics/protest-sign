@@ -2,6 +2,7 @@ from numpy import zeros
 import numpy
 from PIL import BdfFontFile, Image
 from rgbmatrix import graphics, RGBMatrixOptions, RGBMatrix
+import time
 
 fp = open('6x10.bdf','rb')
 b = BdfFontFile.BdfFontFile(fp)
@@ -215,5 +216,25 @@ class ThreeLineDisplay(object):
 
 
 
+class SimpleDisplay(ThreeLineDisplay):
 
+
+    def reset_all_lines(self):
+        for i in [0, 1, 2]:
+            self.reset_line(i)
+            self.clear_line(i)
+
+    def write_one_line(self, line_number, text, color, wait):
+        self.reset_line(line_number)
+        self.clear_line(line_number)
+        self.draw_the_line(line_number=line_number, text=text, color=color)
+        time.sleep(wait)
+
+    def write_all_lines(self, lines, wait, colors):
+        self.reset_all_lines()
+        self.draw_the_line(line_number=0, text=lines[0], color=colors[0])
+        self.draw_the_line(line_number=1, text=lines[1], color=colors[1])
+        self.draw_the_line(line_number=2, text=lines[2],  color=colors[2])
+        self.update()
+        time.sleep(wait)
 
