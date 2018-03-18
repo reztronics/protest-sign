@@ -207,19 +207,24 @@ $(document).ready(function(){
             /******** Delete Button **************/
             var delete_button = $('<input type="button" value="delete"/>').data("index", index).addClass("btn btn-danger");
             delete_button.on("click", function(){
-               var delete_payload = {"action": "delete",
-                                     "index": index};
-                $.ajax({
-                     url: "/update",
-                     type: "POST",
-                     data: JSON.stringify(delete_payload),
-                     dataType: "json",
-                     contentType: "application/json"
-                        })
-                     .done(function (data) {
-                     console.log("Response " + JSON.stringify(data));
-                     location.reload();
-                     });
+                var r = confirm("Confirm Delete");
+                if(r == true)
+                {
+                   var delete_payload = {"action": "delete",
+                                         "index": index};
+                    $.ajax({
+                         url: "/update",
+                         type: "POST",
+                         data: JSON.stringify(delete_payload),
+                         dataType: "json",
+                         contentType: "application/json"
+                            })
+                         .done(function (data) {
+                         console.log("Response " + JSON.stringify(data));
+                         location.reload();
+                         });
+                }
+
 
              });
             //$("#entries").append(delete_button);
