@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Bootstrap 101 Template</title>
+    <title>protest.digital</title>
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.css') }}" >
@@ -50,7 +50,6 @@
     <![endif]-->
   </head>
   <body>
-    <h1>Hello, world!</h1>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script type=text/javascript src="{{url_for('static', filename='jquery.js') }}"></script>
@@ -206,7 +205,7 @@ $(document).ready(function(){
             $("#entries").append(container);
             //left.append("<h2><span class='badge'>"+ index + "</span></h2>");
             /******** Delete Button **************/
-            var delete_button = $('<input type="button" value="delete"/>').data("index", index).addClass("btn btn-outline-secondary");
+            var delete_button = $('<input type="button" value="delete"/>').data("index", index).addClass("btn btn-danger");
             delete_button.on("click", function(){
                var delete_payload = {"action": "delete",
                                      "index": index};
@@ -228,7 +227,7 @@ $(document).ready(function(){
             right.append($("<br />"));
 
             /******** Show Button **************/
-            var show_button = $('<input type="button" value="show"/>').data("index", index).addClass("btn btn-outline-secondary");
+            var show_button = $('<input type="button" value="show"/>').data("index", index).addClass("btn btn-success");
             show_button.on("click", function(){
 
                 $.ajax({
@@ -248,7 +247,7 @@ $(document).ready(function(){
             right.append(show_button);
             right.append($("<br />"));
             /******** Copy Button **************/
-            var edit_button = $('<input type="button" value="copy"/>').data("index", index).addClass("btn btn-outline-secondary");
+            var edit_button = $('<input type="button" value="copy"/>').data("index", index).addClass("btn btn-primary");
 
             edit_button.on("click", function(){
                 var line1 = $("#line1-"+index).text();
@@ -295,15 +294,16 @@ $(document).ready(function(){
 
 });
 </script>
-<button id="run-mode" class="btn btn-outline-secondary" type="button">Run Mode</button>
-<button id="edit-mode" class="btn btn-outline-secondary" type="button">Edit Mode</button>
+<button id="run-mode" class="btn btn-primary" type="button">Run Mode</button>
+<button id="edit-mode" class="btn btn-primary" type="button">Edit Mode</button>
 <br />
 <br />
 <br />
 <div id="entries" data-spy="scroll" class="smooth-scroll">
 </div>
-<h1>Add a New Entry</h1>
+
 <div id="updates">
+<h1>Add</h1>
 <div class="input-group mb-3">
   <div class="input-group-prepend">
     <span class="input-group-text" id="basic-addon1">
@@ -352,8 +352,8 @@ $(document).ready(function(){
 </div>
   <input id="display-time" type="text" class="form-control text-entry" placeholder="Display Time" aria-label="Username" aria-describedby="basic-addon1" >
 
-<button id="add-entry" class="btn btn-outline-secondary" type="button">Add</button>
-<button id="preview-entry" class="btn btn-outline-secondary" type="button">Preview</button>
+<button id="add-entry" class="btn btn-success" type="button">Add</button>
+<button id="preview-entry" class="btn btn-primary" type="button">Preview</button>
 </div>
   </body>
 </html>
