@@ -14,8 +14,33 @@
     h1 {color: grey;}
     h2 {color: grey;}
     .input-group-text, select, option, .form-control {background-color: black;
-                      color: grey;}
+                                                      color: grey;}
     .input, .text-entry {background-color: black; }
+    #entries {overflow-y: scroll;
+            height: 350px;
+            width: 100%;
+            }
+
+    .container {
+        width: 100%;
+        height: 200px;
+        /*background: aqua*/;
+        margin-left: 0%;
+        /*padding: 10px;*/
+    }
+    .one {
+        /*width: 15%;*/
+        height: 200px;
+        /*background: red;*/
+
+        float: left;
+    }
+    .two {
+        margin-left: 15%;
+        height: 200px;
+        padding-left: 100px;
+        /* background: black; */
+    }
     </style>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -62,133 +87,110 @@ function color_from_string(s)
     }
 }
 
-function color_array_to_rgb_string(color)
-{
-    return 'rgb(' + color[0] + ',' + color[1] + "," + color[2]+")";
-}
+
+
 
 $(document).ready(function(){
 
-    var edit_flag = false;
-    var edit_index = null;
+    function color_array_to_rgb_string(color)
+    {
+        return 'rgb(' + color[0] + ',' + color[1] + "," + color[2]+")";
+    }
 
-    $("#line1-text").css('color', color_array_to_rgb_string($("#line1-color").val()));
-    $("#line2-text").css('color', color_array_to_rgb_string($("#line2-color").val()));
-    $("#line3-text").css('color', color_array_to_rgb_string($("#line3-color").val()));
+    function get_entry_data(index)
+    {
+        var line1_text = $("#line1-"+index).text();
+        var line1_color = $("#line1-"+index).css('color');
+        var line2_text = $("#line2-"+index).text();
+        var line2_color = $("#line2-"+index).css('color');
+        var line3_text = $("#line3-"+index).text();
+        var line3_color = $("#line3-"+index).css('color');
+
+        var entry = {"line1": {"text": line1_text, "color": line1_color},
+                     "line2": {"text": line2_text, "color": line2_color},
+                     "line3": {"text": line3_text, "color": line3_color}
+                    };
+        return entry;
+    }
+
+    function get_new_entry_from_form()
+    {
+        var line_1_text = $("#line1-text").val();
+        var line_2_text = $("#line2-text").val();
+        var line_3_text = $("#line3-text").val();
+        var line_1_color = $("#line1-color").val();
+        var line_2_color = $("#line2-color").val();
+        var line_3_color = $("#line3-color").val();
+        var display_time = $("#display-time").val();
+
+        line_1_color = color_from_string(line_1_color);
+        line_2_color = color_from_string(line_2_color);
+        line_3_color = color_from_string(line_3_color);
+
+        var entry = {"line1": {"text": line_1_text,
+                               "color": line_1_color},
+                     "line2": {"text": line_2_text,
+                               "color": line_2_color},
+                     "line3": {"text": line_3_text,
+                               "color": line_3_color},
+                     "display_time": parseInt(display_time)};
+        return entry;
+    }
+
+    /******** Run Mode Button **********/
     $("#run-mode").on("click", function(){
         $.get('/mode/display');
     });
 
+    /******** Edit Mode Button **********/
     $("#edit-mode").on("click", function(){
         $.get('/mode/editor');
     });
 
-
+    /******** Preview Button **********/
     $("#preview-entry").on("click", function(){
-        var line_1_text = $("#line1-text").val();
-        var line_2_text = $("#line2-text").val();
-        var line_3_text = $("#line3-text").val();
-        var line_1_color = $("#line1-color").val();
-        var line_2_color = $("#line2-color").val();
-        var line_3_color = $("#line3-color").val();
-        var display_time = $("#display-time").val();
-
-        line_1_color = color_from_string(line_1_color);
-        line_2_color = color_from_string(line_2_color);
-        line_3_color = color_from_string(line_3_color);
-
         var action = "preview";
         var url = "/update";
-        //var body = {};
-        /*
-        if(edit_flag == true)
-        {
-            action = "edit";
-            url = "/edit"
-            //body.index = edit_index;
-        }
-        */
 
         var body = {"action": action,
+                    data: get_new_entry_from_form()};
 
-                    "data": {
-                    "line1": {"text": line_1_text,
-                             "color": line_1_color},
-                    "line2": {"text": line_2_text,
-                              "color": line_2_color},
-                    "line3": {"text": line_3_text,
-                              "color": line_3_color},
-                    "display_time": parseInt(display_time)}};
+        $.ajax({
+             url: url,
+             type: "POST",
+             data: JSON.stringify(body),
+             dataType: "json",
+             contentType: "application/json"
+                })
+             .done(function (data) {
+             console.log("Response " + JSON.stringify(data));
 
-    $.ajax({
-         url: url,
-         type: "POST",
-         data: JSON.stringify(body),
-         dataType: "json",
-         contentType: "application/json"
-            })
-         .done(function (data) {
-         console.log("Response " + JSON.stringify(data));
-         //edit_flag = false;
-         //$("#add-entry").text("Add");
-         //location.reload();
-         });
-
-       });
-
+             });
+    });
+    /******** Add Button **********/
     $("#add-entry").on("click", function(){
-        var line_1_text = $("#line1-text").val();
-        var line_2_text = $("#line2-text").val();
-        var line_3_text = $("#line3-text").val();
-        var line_1_color = $("#line1-color").val();
-        var line_2_color = $("#line2-color").val();
-        var line_3_color = $("#line3-color").val();
-        var display_time = $("#display-time").val();
-
-        line_1_color = color_from_string(line_1_color);
-        line_2_color = color_from_string(line_2_color);
-        line_3_color = color_from_string(line_3_color);
 
         var action = "add";
         var url = "/update";
-        //var body = {};
-        /*
-        if(edit_flag == true)
-        {
-            action = "edit";
-            url = "/edit"
-            //body.index = edit_index;
-        }
-        */
 
         var body = {"action": action,
+            data: get_new_entry_from_form()};
 
-                    "data": {
-                    "line1": {"text": line_1_text,
-                             "color": line_1_color},
-                    "line2": {"text": line_2_text,
-                              "color": line_2_color},
-                    "line3": {"text": line_3_text,
-                              "color": line_3_color},
-                    "display_time": parseInt(display_time)}};
+        $.ajax({
+             url: url,
+             type: "POST",
+             data: JSON.stringify(body),
+             dataType: "json",
+             contentType: "application/json"
+                })
+             .done(function (data) {
+             console.log("Response " + JSON.stringify(data));
+             location.reload();
+             });
 
-    $.ajax({
-         url: url,
-         type: "POST",
-         data: JSON.stringify(body),
-         dataType: "json",
-         contentType: "application/json"
-            })
-         .done(function (data) {
-         console.log("Response " + JSON.stringify(data));
-         //edit_flag = false;
-         //$("#add-entry").text("Add");
-         location.reload();
-         });
+    });
 
-       });
-
-
+    /******** Load Entries from Server **********/
    $.getJSON('/', function(data){
         $.each(data.entries, function(index, entry){
             var table_name = "#entry-" + index;
@@ -196,7 +198,14 @@ $(document).ready(function(){
             var line2_color = 'rgb(' + entry.line2.color[0] + ',' + entry.line2.color[1] + "," + entry.line2.color[2]+")";
             var line3_color = 'rgb(' + entry.line3.color[0] + ',' + entry.line3.color[1] + "," + entry.line3.color[2]+")";
 
-            //$("#entries").append($('<input type="button" value="delete"/>').data("index", index));
+            var container = $("<section>").addClass("container");
+            var left = $("<div>").addClass("one");
+            var right = $("<div>").addClass("two");
+            container.append(left);
+            container.append(right);
+            $("#entries").append(container);
+            //left.append("<h2><span class='badge'>"+ index + "</span></h2>");
+            /******** Delete Button **************/
             var delete_button = $('<input type="button" value="delete"/>').data("index", index).addClass("btn btn-outline-secondary");
             delete_button.on("click", function(){
                var delete_payload = {"action": "delete",
@@ -214,12 +223,14 @@ $(document).ready(function(){
                      });
 
              });
-            $("#entries").append(delete_button);
+            //$("#entries").append(delete_button);
+            right.append(delete_button);
+            right.append($("<br />"));
 
+            /******** Show Button **************/
             var show_button = $('<input type="button" value="show"/>').data("index", index).addClass("btn btn-outline-secondary");
             show_button.on("click", function(){
-               //var delete_payload = {"action": "delete",
-               //                      "index": index};
+
                 $.ajax({
                      url: "/show/"+index,
                      type: "GET",
@@ -229,34 +240,17 @@ $(document).ready(function(){
                         })
                      .done(function (data) {
                      console.log("Response " + JSON.stringify(data));
-                     //location.reload();
                      });
 
              });
-            $("#entries").append(show_button);
 
-
+            //$("#entries").append(show_button);
+            right.append(show_button);
+            right.append($("<br />"));
+            /******** Copy Button **************/
             var edit_button = $('<input type="button" value="copy"/>').data("index", index).addClass("btn btn-outline-secondary");
+
             edit_button.on("click", function(){
-                //edit_flag = true
-                //edit_index = index;
-                //$("#add-entry").text("EDIT");
-               //var delete_payload = {"action": "delete",
-               //                      "index": index};
-               /*
-                $.ajax({
-                     url: "/edit/"+index,
-                     type: "GET",
-                     data: null,
-                     dataType: "json",
-                     contentType: "application/json"
-                        })
-                     .done(function (data) {
-                     console.log("Response " + JSON.stringify(data));
-                     location.reload();
-                     });
-                */
-                //alert("Yo!")
                 var line1 = $("#line1-"+index).text();
                 console.log(line1);
                 $("#line1-text").val(line1);
@@ -265,29 +259,48 @@ $(document).ready(function(){
                 var line3 = $("#line3-"+index).text();
                 $("#line3-text").val(line3);
              });
-            $("#entries").append(edit_button);
+
+            //$("#entries").append(edit_button);
+            right.append(edit_button);
 
 
+            /********** Index Label *********/
+            //$("#entries").append("<h2><span class='badge'>"+ index + "</span></h2>");
+ 
 
-            $("#entries").append("<h2>"+index+"</h2>");
-            $("#entries").append($("<table border=\"1\" class=\"table\">")
-                .attr("id", table_name)
-                .append($("<tr>")
-                    .append($("<td>").html(entry.line1.text).css('color', line1_color).attr("id", "line1-"+index)))
-                .append($("<tr>")
-                    .append($("<td>").html(entry.line2.text).css('color', line2_color).attr("id", "line2-"+index)))
-                .append($("<tr>")
-                    .append($("<td>").html(entry.line3.text).css('color', line3_color).attr("id", "line3-"+index))));
-            $(table_name).append($("<button>").text("Delete"))
+            /********** Text Fields *********/
+
+            var line1 = $("<h3>").html(entry.line1.text)
+                                 .css('color', line1_color)
+                                 .css('white-space', 'pre-wrap')
+                                 .attr("id", "line1-"+index);
+            //$("#entries").append(line1);
+            left.append(line1);
+
+            var line2 = $("<h3>").html(entry.line2.text)
+                                 .css('color', line2_color)
+                                 .css('white-space', 'pre-wrap')
+                                 .attr("id", "line2-"+index);
+            //$("#entries").append(line2);
+            left.append(line2);
+
+            var line3 = $("<h3>").html(entry.line3.text)
+                                 .css('color', line3_color)
+                                 .css('white-space', 'pre-wrap')
+                                 .attr("id", "line3-"+index);
+            //$("#entries").append(line3);
+            left.append(line3);
         })
    });
 
 });
 </script>
-<button id="run-mode" class="btn btn-outline-secondary" type="button">Run</button>
-<button id="edit-mode" class="btn btn-outline-secondary" type="button">Edit</button>
+<button id="run-mode" class="btn btn-outline-secondary" type="button">Run Mode</button>
+<button id="edit-mode" class="btn btn-outline-secondary" type="button">Edit Mode</button>
 <br />
-<div id="entries">
+<br />
+<br />
+<div id="entries" data-spy="scroll" class="smooth-scroll">
 </div>
 <h1>Add a New Entry</h1>
 <div id="updates">
