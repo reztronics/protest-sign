@@ -6,6 +6,9 @@ import time
 import json
 import thread
 from Queue import Queue
+from pprint import pprint
+
+"""3rd Party Libraries"""
 from flask import Flask, jsonify, request, render_template
 
 """Project libraries."""
@@ -50,7 +53,7 @@ class DisplayQueue(Queue):
 
 
 
-from pprint import pprint
+
 class Controller(object):
     """Handles processing updates to display."""
 
@@ -72,13 +75,11 @@ class Controller(object):
 
         if entry['action'] in [defines.show, "preview"]:
             self.output_queue.put(entry)
-            # print "@ "
-            # pprint(entry)
+
         elif self.in_display_mode():
             data = self.data_store.get()
             command = {"action": "show",
                        "data": data}
-            # print command
             self.output_queue.put(command)
 
         self.input_queue.task_done()
@@ -93,16 +94,14 @@ class Display(object):
 
     def update(self):
         entry = self.input_queue.get()
-        # print(entry)
-        #if entry['action'] == defines.show:
         if 'index' in entry:
             entry = self.data_store.get(entry['index'])
-        print entry
+
         self.write_to_display(entry)
         self.input_queue.task_done()
 
     def write_to_display(self, data):
-        # pprint(data.keys())
+
         if 'data' in data:
             data = data['data']
         lines = [data['line1']['text'],
@@ -116,7 +115,6 @@ class Display(object):
                   data['line2']['color'],
                   data['line3']['color']]
 
-        print data
         if data['display_time']:
             display_time = data['display_time']
         else:
@@ -140,7 +138,6 @@ display = Display(display_queue, data_store)
 """ Web Interface."""
 @app.route("/update", methods=["POST"])
 def update():
-    print(request.json)
     update_queue.put(request.json)
     return jsonify({'result': True})
 
@@ -150,8 +147,6 @@ def view():
 
 @app.route('/show/<int:index>')
 def show(index):
-    #global editor_queue
-    # editor_queue.append(index)
     message = {"action": "show",
                "index": index}
     update_queue.put(message)
@@ -171,15 +166,7 @@ def flask_thread():
     app.run(host='0.0.0.0', debug=False)
 
 def main_loop():
-    # data_store.set_mode(mode)
-    # controller.set_mode(mode)
-    """
-    data_store = DataStore(defines.default_filename,
-                           update_queue, event_queue)
-    controller = Controller(mode, event_queue, display_queue,
-                            data_store)
-    display = Display(display_queue)
-    """
+
     while True:
         # Pass any updates from the web interface
         # to the data store.
@@ -215,8 +202,6 @@ def run_editor():
 
 if __name__ == "__main__":
     thread.start_new_thread(flask_thread, ())
-    # run_display()
-    # run_editor()
     main_loop()
 
 
