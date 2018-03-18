@@ -44,13 +44,13 @@ def write_to_disk(data):
     
     if type(data) is list:
         data = {'entries': data}
-    with open('/protest/data.json', 'w') as outfile:
+    with open('data.json', 'w') as outfile:
         json.dump(data, outfile)
 
 
 def read_from_disk():
     try:
-        with open('/protest/data.json') as json_data:
+        with open('data.json') as json_data:
             d = json.load(json_data)
             return d['entries']
     except:
@@ -354,6 +354,6 @@ thread.start_new_thread(flaskThread,())
 
 
 if __name__ == "__main__":
-    #s.run_editor()
-    s.run()
+    s.run_editor()
+    #s.run()
 

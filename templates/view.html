@@ -60,6 +60,66 @@ $(document).ready(function(){
     var edit_flag = false;
     var edit_index = null;
 
+    $("#run-mode").on("click", function(){
+        $.get('/mode/display');
+    });
+
+    $("#edit-mode").on("click", function(){
+        $.get('/mode/editor');
+    });
+
+
+    $("#preview-entry").on("click", function(){
+        var line_1_text = $("#line1-text").val();
+        var line_2_text = $("#line2-text").val();
+        var line_3_text = $("#line3-text").val();
+        var line_1_color = $("#line1-color").val();
+        var line_2_color = $("#line2-color").val();
+        var line_3_color = $("#line3-color").val();
+        var display_time = $("#display-time").val();
+
+        line_1_color = color_from_string(line_1_color);
+        line_2_color = color_from_string(line_2_color);
+        line_3_color = color_from_string(line_3_color);
+
+        var action = "preview";
+        var url = "/update";
+        //var body = {};
+        /*
+        if(edit_flag == true)
+        {
+            action = "edit";
+            url = "/edit"
+            //body.index = edit_index;
+        }
+        */
+
+        var body = {"action": action,
+
+                    "data": {
+                    "line1": {"text": line_1_text,
+                             "color": line_1_color},
+                    "line2": {"text": line_2_text,
+                              "color": line_2_color},
+                    "line3": {"text": line_3_text,
+                              "color": line_3_color},
+                    "display_time": parseInt(display_time)}};
+
+    $.ajax({
+         url: url,
+         type: "POST",
+         data: JSON.stringify(body),
+         dataType: "json",
+         contentType: "application/json"
+            })
+         .done(function (data) {
+         console.log("Response " + JSON.stringify(data));
+         //edit_flag = false;
+         //$("#add-entry").text("Add");
+         //location.reload();
+         });
+
+       });
 
     $("#add-entry").on("click", function(){
         var line_1_text = $("#line1-text").val();
@@ -154,7 +214,7 @@ $(document).ready(function(){
                         })
                      .done(function (data) {
                      console.log("Response " + JSON.stringify(data));
-                     location.reload();
+                     //location.reload();
                      });
 
              });
@@ -181,7 +241,7 @@ $(document).ready(function(){
                      location.reload();
                      });
                 */
-                alert("Yo!")
+                //alert("Yo!")
                 var line1 = $("#line1-"+index).text();
                 console.log(line1);
                 $("#line1-text").val(line1);
@@ -209,6 +269,9 @@ $(document).ready(function(){
 
 });
 </script>
+<button id="run-mode" class="btn btn-outline-secondary" type="button">Run</button>
+<button id="edit-mode" class="btn btn-outline-secondary" type="button">Edit</button>
+<br />
 <div id="entries">
 </div>
 <div id="updates">
@@ -261,6 +324,7 @@ $(document).ready(function(){
   <input id="display-time" type="text" class="form-control" placeholder="Display Time" aria-label="Username" aria-describedby="basic-addon1" >
 
 <button id="add-entry" class="btn btn-outline-secondary" type="button">Add</button>
+<button id="preview-entry" class="btn btn-outline-secondary" type="button">Preview</button>
 </div>
   </body>
 </html>
