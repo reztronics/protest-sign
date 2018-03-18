@@ -9,7 +9,14 @@
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.css') }}" >
-
+    <style>
+    body {background-color: black;}
+    h1 {color: grey;}
+    h2 {color: grey;}
+    .input-group-text, select, option, .form-control {background-color: black;
+                      color: grey;}
+    .input, .text-entry {background-color: black; }
+    </style>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -55,11 +62,19 @@ function color_from_string(s)
     }
 }
 
+function color_array_to_rgb_string(color)
+{
+    return 'rgb(' + color[0] + ',' + color[1] + "," + color[2]+")";
+}
+
 $(document).ready(function(){
 
     var edit_flag = false;
     var edit_index = null;
 
+    $("#line1-text").css('color', color_array_to_rgb_string($("#line1-color").val()));
+    $("#line2-text").css('color', color_array_to_rgb_string($("#line2-color").val()));
+    $("#line3-text").css('color', color_array_to_rgb_string($("#line3-color").val()));
     $("#run-mode").on("click", function(){
         $.get('/mode/display');
     });
@@ -182,7 +197,7 @@ $(document).ready(function(){
             var line3_color = 'rgb(' + entry.line3.color[0] + ',' + entry.line3.color[1] + "," + entry.line3.color[2]+")";
 
             //$("#entries").append($('<input type="button" value="delete"/>').data("index", index));
-            var delete_button = $('<input type="button" value="delete"/>').data("index", index);
+            var delete_button = $('<input type="button" value="delete"/>').data("index", index).addClass("btn btn-outline-secondary");
             delete_button.on("click", function(){
                var delete_payload = {"action": "delete",
                                      "index": index};
@@ -201,7 +216,7 @@ $(document).ready(function(){
              });
             $("#entries").append(delete_button);
 
-            var show_button = $('<input type="button" value="show"/>').data("index", index);
+            var show_button = $('<input type="button" value="show"/>').data("index", index).addClass("btn btn-outline-secondary");
             show_button.on("click", function(){
                //var delete_payload = {"action": "delete",
                //                      "index": index};
@@ -221,7 +236,7 @@ $(document).ready(function(){
             $("#entries").append(show_button);
 
 
-            var edit_button = $('<input type="button" value="edit"/>').data("index", index);
+            var edit_button = $('<input type="button" value="copy"/>').data("index", index).addClass("btn btn-outline-secondary");
             edit_button.on("click", function(){
                 //edit_flag = true
                 //edit_index = index;
@@ -274,6 +289,7 @@ $(document).ready(function(){
 <br />
 <div id="entries">
 </div>
+<h1>Add a New Entry</h1>
 <div id="updates">
 <div class="input-group mb-3">
   <div class="input-group-prepend">
@@ -287,7 +303,7 @@ $(document).ready(function(){
 </select>
     </span>
   </div>
-  <input id="line1-text" type="text" class="form-control" placeholder="Text" aria-label="Username" aria-describedby="basic-addon1" maxlength="11">
+  <input id="line1-text" type="text" class="form-control text-entry" placeholder="Text" aria-label="Username" aria-describedby="basic-addon1" maxlength="11">
 
 
 
@@ -303,7 +319,7 @@ $(document).ready(function(){
 </select>
     </span>
   </div>
-  <input id="line2-text" type="text" class="form-control" placeholder="Text" aria-label="Username" aria-describedby="basic-addon1" maxlength="11">
+  <input id="line2-text" type="text" class="form-control text-entry" placeholder="Text" aria-label="Username" aria-describedby="basic-addon1" maxlength="11">
 
 
 
@@ -321,7 +337,7 @@ $(document).ready(function(){
   </div>
   <input id="line3-text" type="text" class="form-control" placeholder="Text" aria-label="Username" aria-describedby="basic-addon1" maxlength="11">
 </div>
-  <input id="display-time" type="text" class="form-control" placeholder="Display Time" aria-label="Username" aria-describedby="basic-addon1" >
+  <input id="display-time" type="text" class="form-control text-entry" placeholder="Display Time" aria-label="Username" aria-describedby="basic-addon1" >
 
 <button id="add-entry" class="btn btn-outline-secondary" type="button">Add</button>
 <button id="preview-entry" class="btn btn-outline-secondary" type="button">Preview</button>

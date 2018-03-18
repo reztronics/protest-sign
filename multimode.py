@@ -165,6 +165,7 @@ def hello():
 @app.route('/mode/<mode>')
 def set_mode(mode):
     controller.set_mode(mode)
+    return jsonify({'result': True})
 
 def flask_thread():
     app.run(host='0.0.0.0', debug=False)
